@@ -6,6 +6,21 @@ class PortfolioApp {
             }
 
             init() {
+
+                        
+                document.body.classList.add('loading');
+    
+    // Hide loading screen after page load with proper animation
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            this.loadingScreen.style.opacity = '0';
+            this.loadingScreen.style.pointerEvents = 'none';
+            document.body.classList.remove('loading');
+            this.startPageAnimations();
+        }, 1500);
+    });
+
+                        
                 this.navbar = document.getElementById('navbar');
                 this.progressBar = document.getElementById('progressBar');
                 this.themeToggle = document.getElementById('themeToggle');
@@ -502,4 +517,5 @@ class PortfolioApp {
                 navigator.serviceWorker.register('/sw.js')
                     .catch(() => console.log('Service Worker registration failed'));
             });
+
         }
