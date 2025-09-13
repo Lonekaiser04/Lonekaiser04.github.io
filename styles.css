@@ -187,41 +187,50 @@
         .font-extrabold { font-weight: 800; }
         .font-black { font-weight: 900; }
 
-        /* Loading Screen */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: var(--bg-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            transition: all var(--transition-slow);
-        }
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: all var(--transition-slow);
+}
 
-        .loading-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
+.loading-screen .text-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
-        .loader {
-            width: 60px;
-            height: 60px;
-            border: 3px solid var(--border-primary);
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+.loader {
+    width: 60px;
+    height: 60px;
+    border: 3px solid var(--border-primary);
+    border-top: 3px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
 
-        .loading-text {
-            margin-top: var(--space-lg);
-            font-size: var(--text-lg);
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    margin-top: var(--space-lg);
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-align: center;
+}
 
         /* Advanced Navigation */
         .navbar {
@@ -1769,4 +1778,5 @@
                 image-rendering: -webkit-optimize-contrast;
                 image-rendering: crisp-edges;
             }
+
         }
