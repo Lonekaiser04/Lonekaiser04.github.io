@@ -1,4 +1,7 @@
-class PortfolioApp {
+        // Google Apps Script URL for form submission
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzBiVz2xs7GSbHz4fNr8czOU6uzl9t9NSMQjcTwvx-1dAzaByWZkkSU6K8dJ9JZu24_/exec';
+        
+        class PortfolioApp {
             constructor() {
                 this.init();
                 this.bindEvents();
@@ -6,20 +9,17 @@ class PortfolioApp {
             }
 
             init() {
-
-                        
                 document.body.classList.add('loading');
     
-    // Hide loading screen after page load with proper animation
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            this.loadingScreen.style.opacity = '0';
-            this.loadingScreen.style.pointerEvents = 'none';
-            document.body.classList.remove('loading');
-            this.startPageAnimations();
-        }, 1500);
-    });
-
+                // Hide loading screen after page load with proper animation
+                window.addEventListener('load', () => {
+                    setTimeout(() => {
+                        this.loadingScreen.style.opacity = '0';
+                        this.loadingScreen.style.pointerEvents = 'none';
+                        document.body.classList.remove('loading');
+                        this.startPageAnimations();
+                    }, 1500);
+                });
                         
                 this.navbar = document.getElementById('navbar');
                 this.progressBar = document.getElementById('progressBar');
@@ -30,14 +30,6 @@ class PortfolioApp {
                 
                 // Theme initialization
                 this.initTheme();
-                
-                // Hide loading screen after page load
-                window.addEventListener('load', () => {
-                    setTimeout(() => {
-                        this.loadingScreen.classList.add('hidden');
-                        this.startPageAnimations();
-                    }, 1500);
-                });
             }
 
             bindEvents() {
@@ -337,19 +329,42 @@ class PortfolioApp {
                 submitBtn.querySelector('span') && (submitBtn.querySelector('span').style.display = 'none');
                 btnLoading.style.display = 'inline-flex';
                 
-                // Simulate form submission
-                setTimeout(() => {
+                // Prepare data for submission
+                const data = {
+                    fullName: formData.get('fullName'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    subject: formData.get('subject'),
+                    message: formData.get('message'),
+                    timestamp: new Date().toISOString()
+                };
+
+                // Send data to Google Sheets
+                fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(() => {
                     // Show success message
                     this.showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
                     
                     // Reset form
                     form.reset();
-                    
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    this.showNotification('Failed to send message. Please try again.', 'error');
+                })
+                .finally(() => {
                     // Reset button
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = btnText;
                     btnLoading.style.display = 'none';
-                }, 2000);
+                });
             }
 
             showNotification(message, type = 'info') {
@@ -437,55 +452,6 @@ class PortfolioApp {
                             opacity: 1;
                         }
                     }
-                    
-                    .footer-links {
-                        display: grid;
-                        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                        gap: var(--space-2xl);
-                        margin: var(--space-3xl) 0;
-                        text-align: left;
-                    }
-                    
-                    .footer-section h3 {
-                        color: var(--text-primary);
-                        margin-bottom: var(--space-lg);
-                        font-size: 1.125rem;
-                        font-weight: 600;
-                    }
-                    
-                    .footer-section ul {
-                        list-style: none;
-                    }
-                    
-                    .footer-section ul li {
-                        margin-bottom: var(--space-sm);
-                    }
-                    
-                    .footer-section ul li a {
-                        color: var(--text-secondary);
-                        text-decoration: none;
-                        transition: var(--transition-normal);
-                    }
-                    
-                    .footer-section ul li a:hover {
-                        color: var(--primary);
-                    }
-                    
-                    .checkbox-group {
-                        display: flex;
-                        align-items: center;
-                        gap: var(--space-sm);
-                    }
-                    
-                    .checkbox-group input[type="checkbox"] {
-                        width: 18px;
-                        height: 18px;
-                    }
-                    
-                    .checkbox-group label {
-                        font-size: 0.875rem;
-                        color: var(--text-secondary);
-                    }
                 `;
                 
                 const style = document.createElement('style');
@@ -517,5 +483,4 @@ class PortfolioApp {
                 navigator.serviceWorker.register('/sw.js')
                     .catch(() => console.log('Service Worker registration failed'));
             });
-
         }
