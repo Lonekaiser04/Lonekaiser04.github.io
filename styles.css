@@ -527,7 +527,7 @@
             color: var(--primary);
             position: relative;
             overflow: hidden;
-            background-image: url("image.jpg");
+            background-image: url("Kaiser.jpg");
             background-position: center;
             background-size: contain;
         }
@@ -1845,5 +1845,6 @@
             }
 
         }
+
 
 
