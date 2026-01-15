@@ -484,3 +484,61 @@
                     .catch(() => console.log('Service Worker registration failed'));
             });
         }
+        // SiratSync Smooth Scroll Enhancement
+document.addEventListener('DOMContentLoaded', function() {
+    // Enhanced smooth scroll for SiratSync CTA
+    const siratSyncCta = document.querySelector('.siratsync-cta');
+    if (siratSyncCta) {
+        siratSyncCta.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                // Add visual feedback
+                this.classList.add('clicked');
+                
+                // Smooth scroll with offset for fixed navbar
+                const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+                
+                // Remove feedback class after animation
+                setTimeout(() => {
+                    this.classList.remove('clicked');
+                }, 300);
+            }
+        });
+    }
+    
+    // SiratSync section animation on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const siratSyncObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+                
+                // Add slight delay between cards
+                const cards = entry.target.querySelectorAll('.siratsync-card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('fade-in-up');
+                    }, index * 150);
+                });
+            }
+        });
+    }, observerOptions);
+    
+    const siratSyncSection = document.querySelector('.siratsync-section');
+    if (siratSyncSection) {
+        siratSyncObserver.observe(siratSyncSection);
+    }
+});
