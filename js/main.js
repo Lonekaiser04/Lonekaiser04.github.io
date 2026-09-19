@@ -2,21 +2,21 @@
    Kaiser Mohiuddin — Portfolio
    js/main.js
 
-   Interaction layer. No dependencies, no build step.
-     1. Config
-     2. Utilities & toasts
-     3. Navbar: sticky state, mobile menu, scroll-spy
-     4. Reveal on scroll
-     5. Metric counters
-     6. Project filtering
-     7. Copy to clipboard
-     8. Misc
+   Interaction & Animation Layer. No external dependencies, 100% vanilla JS.
+     1. Config & Motion Preferences
+     2. Utilities & Toasts
+     3. Navbar: Sticky Header, Mobile Drawer, Scroll-Spy
+     4. Reveal on Scroll (Staggered Entry)
+     5. Metric Counters (Smooth Animation)
+     6. Project Filtering (Smooth Transition)
+     7. Copy to Clipboard (Haptic/Visual Feedback)
+     8. Smooth Anchor Scrolling & Focus
    ========================================================================== */
 
 (function () {
   'use strict';
 
-  /* 1. CONFIG ============================================================= */
+  /* 1. CONFIG & MOTION PREFERENCES ========================================= */
 
   var prefersReducedMotion = window.matchMedia(
     '(prefers-reduced-motion: reduce)'
@@ -30,7 +30,7 @@
   var toastStack = $('#toasts');
 
   /**
-   * Show a transient message in the bottom-right stack.
+   * Show a transient alert notification in the bottom toast stack.
    * @param {string} message
    * @param {'success'|'error'} [kind]
    */
@@ -53,109 +53,139 @@
     el.appendChild(text);
     toastStack.appendChild(el);
 
-    requestAnimationFrame(function () { el.classList.add('is-in'); });
+    requestAnimationFrame(function () {
+      el.classList.add('is-in');
+    });
 
     setTimeout(function () {
       el.classList.remove('is-in');
-      setTimeout(function () { el.remove(); }, 400);
+      setTimeout(function () { el.remove(); }, 350);
     }, 3200);
   }
 
-  /* 3. NAVBAR ============================================================= */
+  /* 3. NAVBAR, MOBILE DRAWER & SCROLL-SPY =================================== */
 
   var nav = $('#nav');
   var navList = $('#navList');
   var navToggle = $('#navToggle');
+  var navBackdrop = $('#navBackdrop');
   var navAnchors = $$('#navList a');
 
-  // Sticky background once the page has scrolled past the fold edge.
+  // Sticky navbar with blur upon scroll
   function syncNavState() {
     if (!nav) return;
-    nav.classList.toggle('is-stuck', window.scrollY > 24);
+    nav.classList.toggle('is-stuck', window.scrollY > 20);
   }
 
   window.addEventListener('scroll', syncNavState, { passive: true });
   syncNavState();
 
-  // Mobile menu
+  // Mobile Drawer Open / Close controller
   function closeMenu() {
     if (!navList || !navToggle) return;
     navList.classList.remove('is-open');
+    if (navBackdrop) navBackdrop.classList.remove('is-open');
+    document.body.classList.remove('menu-open');
     navToggle.setAttribute('aria-expanded', 'false');
     navToggle.setAttribute('aria-label', 'Open navigation');
     navToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
   }
 
+  function openMenu() {
+    if (!navList || !navToggle) return;
+    navList.classList.add('is-open');
+    if (navBackdrop) navBackdrop.classList.add('is-open');
+    document.body.classList.add('menu-open');
+    navToggle.setAttribute('aria-expanded', 'true');
+    navToggle.setAttribute('aria-label', 'Close navigation');
+    navToggle.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+  }
+
   if (navToggle && navList) {
-    navToggle.addEventListener('click', function () {
-      var open = navList.classList.toggle('is-open');
-      navToggle.setAttribute('aria-expanded', String(open));
-      navToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
-      navToggle.innerHTML = open
-        ? '<i class="fa-solid fa-xmark"></i>'
-        : '<i class="fa-solid fa-bars"></i>';
+    navToggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var isOpen = navList.classList.contains('is-open');
+      if (isOpen) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
     });
 
+    // Close when clicking backdrop
+    if (navBackdrop) {
+      navBackdrop.addEventListener('click', closeMenu);
+    }
+
+    // Close when clicking any nav item
     navAnchors.forEach(function (a) {
-      a.addEventListener('click', closeMenu);
+      a.addEventListener('click', function () {
+        closeMenu();
+      });
     });
 
+    // Close on Escape
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeMenu();
+      if (e.key === 'Escape' && navList.classList.contains('is-open')) {
+        closeMenu();
+      }
     });
 
+    // Close when clicking outside
     document.addEventListener('click', function (e) {
       if (!navList.classList.contains('is-open')) return;
       if (navList.contains(e.target) || navToggle.contains(e.target)) return;
       closeMenu();
     });
+
+    // Close on resize to desktop
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 860 && navList.classList.contains('is-open')) {
+        closeMenu();
+      }
+    }, { passive: true });
   }
 
-  // Scroll-spy. Tracks the section closest to the top of the viewport that is
-  // still intersecting, which behaves better than "last one to fire" on fast
-  // scrolls and on short sections.
+  // Scroll-spy: robust tracking across mobile & desktop viewports
   var spySections = $$('main section[id]');
-  var visible = new Map();
 
   function markActive(id) {
     navAnchors.forEach(function (a) {
       var href = a.getAttribute('href');
+      if (!href) return;
       var target = href === '#top' ? 'top' : href.slice(1);
       a.classList.toggle('is-active', target === id);
     });
   }
 
   if ('IntersectionObserver' in window && spySections.length) {
-    var spy = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            visible.set(entry.target.id, entry.boundingClientRect.top);
-          } else {
-            visible.delete(entry.target.id);
-          }
-        });
+    var observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -65% 0px',
+      threshold: 0
+    };
 
-        if (!visible.size) return;
+    var currentActive = null;
 
-        var best = null;
-        var bestTop = Infinity;
-        visible.forEach(function (top, id) {
-          var abs = Math.abs(top);
-          if (abs < bestTop) { bestTop = abs; best = id; }
-        });
+    var spyObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          currentActive = entry.target.id;
+          markActive(currentActive);
+        }
+      });
+    }, observerOptions);
 
-        if (best) markActive(best);
-      },
-      { rootMargin: '-45% 0px -50% 0px', threshold: 0 }
-    );
-
-    spySections.forEach(function (s) { spy.observe(s); });
+    spySections.forEach(function (sec) {
+      spyObserver.observe(sec);
+    });
   }
 
-  // Back at the very top, "Home" should win regardless of what is intersecting.
+  // Reset to Home when scrolled near top
   window.addEventListener('scroll', function () {
-    if (window.scrollY < 120) markActive('top');
+    if (window.scrollY < 100) {
+      markActive('top');
+    }
   }, { passive: true });
 
   /* 4. REVEAL ON SCROLL =================================================== */
@@ -163,7 +193,9 @@
   var revealables = $$('.reveal');
 
   if (prefersReducedMotion || !('IntersectionObserver' in window)) {
-    revealables.forEach(function (el) { el.classList.add('is-in'); });
+    revealables.forEach(function (el) {
+      el.classList.add('is-in');
+    });
   } else {
     var revealer = new IntersectionObserver(
       function (entries, obs) {
@@ -173,10 +205,12 @@
           obs.unobserve(entry.target);
         });
       },
-      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+      { rootMargin: '0px 0px -6% 0px', threshold: 0.05 }
     );
 
-    revealables.forEach(function (el) { revealer.observe(el); });
+    revealables.forEach(function (el) {
+      revealer.observe(el);
+    });
   }
 
   /* 5. METRIC COUNTERS ==================================================== */
@@ -190,16 +224,21 @@
       return;
     }
 
-    var duration = 1300;
+    var duration = 1400;
     var start = null;
 
     function step(now) {
       if (start === null) start = now;
-      var progress = Math.min((now - start) / duration, 1);
-      // easeOutCubic
+      var elapsed = now - start;
+      var progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
       var eased = 1 - Math.pow(1 - progress, 3);
       el.textContent = Math.round(target * eased).toLocaleString('en-IN');
-      if (progress < 1) requestAnimationFrame(step);
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = target.toLocaleString('en-IN');
+      }
     }
 
     requestAnimationFrame(step);
@@ -216,7 +255,7 @@
           obs.unobserve(entry.target);
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.35 }
     );
 
     counters.forEach(function (c) { counterObserver.observe(c); });
@@ -236,13 +275,15 @@
 
       if (match) {
         card.classList.remove('is-hidden');
-        // Next frame, so the browser registers the display change before
-        // the opacity transition runs.
-        requestAnimationFrame(function () { card.classList.remove('is-out'); });
+        requestAnimationFrame(function () {
+          card.classList.remove('is-out');
+        });
       } else {
         card.classList.add('is-out');
         var hide = function () {
-          if (card.classList.contains('is-out')) card.classList.add('is-hidden');
+          if (card.classList.contains('is-out')) {
+            card.classList.add('is-hidden');
+          }
         };
         if (prefersReducedMotion) hide();
         else setTimeout(hide, 260);
@@ -253,9 +294,9 @@
   filters.forEach(function (btn) {
     btn.addEventListener('click', function () {
       filters.forEach(function (b) {
-        var on = b === btn;
-        b.classList.toggle('is-active', on);
-        b.setAttribute('aria-selected', String(on));
+        var isActive = b === btn;
+        b.classList.toggle('is-active', isActive);
+        b.setAttribute('aria-selected', String(isActive));
       });
       applyFilter(btn.getAttribute('data-filter'));
     });
@@ -274,7 +315,6 @@
 
     var ok = false;
     try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
-
     document.body.removeChild(scratch);
     return ok;
   }
@@ -292,39 +332,54 @@
   $$('[data-copy]').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var value = btn.getAttribute('data-copy');
+      if (!value) return;
 
       if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(value).then(
           function () { confirmCopy(btn); },
           function () {
             if (fallbackCopy(value)) confirmCopy(btn);
-            else toast('Copy failed — select the address and copy it manually.', 'error');
+            else toast('Copy failed — please select and copy manually.', 'error');
           }
         );
       } else if (fallbackCopy(value)) {
         confirmCopy(btn);
       } else {
-        toast('Copy failed — select the address and copy it manually.', 'error');
+        toast('Copy failed — please select and copy manually.', 'error');
       }
     });
   });
 
-  /* 8. MISC =============================================================== */
+  /* 8. MISC & SMOOTH SCROLLING ============================================ */
 
-  var year = $('#year');
-  if (year) year.textContent = String(new Date().getFullYear());
+  var yearEl = $('#year');
+  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-  // Anchor clicks: let CSS smooth scrolling do the work, but move keyboard
-  // focus to the target so the jump isn't lost for screen-reader users.
+  // Anchor clicks: smooth scroll with offset & focus management
   $$('a[href^="#"]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      var id = a.getAttribute('href').slice(1);
-      var target = document.getElementById(id);
+    a.addEventListener('click', function (e) {
+      var href = a.getAttribute('href');
+      if (href === '#' || href === '#top') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        return;
+      }
+      var target = document.getElementById(href.slice(1));
       if (!target) return;
+
+      e.preventDefault();
+      var navHeight = nav ? nav.offsetHeight : 68;
+      var topPos = target.getBoundingClientRect().top + window.scrollY - navHeight - 12;
+
+      window.scrollTo({
+        top: topPos,
+        behavior: prefersReducedMotion ? 'auto' : 'smooth'
+      });
+
       setTimeout(function () {
         target.setAttribute('tabindex', '-1');
         target.focus({ preventScroll: true });
-      }, 420);
+      }, prefersReducedMotion ? 50 : 450);
     });
   });
 })();
