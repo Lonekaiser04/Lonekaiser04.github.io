@@ -63,6 +63,79 @@
     }, 3200);
   }
 
+  /* 2b. THEME TOGGLER ==================================================== */
+
+  var themeToggleBtn = $('#themeToggle');
+  var themeToggleMobileBtn = $('#themeToggleMobile');
+  var metaThemeColor = $('meta[name="theme-color"]');
+
+  function getStoredTheme() {
+    try {
+      return localStorage.getItem('theme');
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function getPreferredTheme() {
+    var stored = getStoredTheme();
+    if (stored) return stored;
+    return (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+  }
+
+  function applyTheme(theme, notify) {
+    document.documentElement.setAttribute('data-theme', theme);
+    try {
+      localStorage.setItem('theme', theme);
+    } catch (e) {}
+
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', theme === 'light' ? '#F8FAFC' : '#070A12');
+    }
+
+    var isLight = theme === 'light';
+
+    if (themeToggleBtn) {
+      themeToggleBtn.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+      themeToggleBtn.setAttribute('title', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+      themeToggleBtn.innerHTML = isLight ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+    }
+
+    if (themeToggleMobileBtn) {
+      themeToggleMobileBtn.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+      themeToggleMobileBtn.innerHTML = (isLight ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>') +
+        '<span class="theme-label-text">' + (isLight ? 'Dark Mode' : 'Light Mode') + '</span>';
+    }
+
+    if (notify) {
+      toast('Switched to ' + (isLight ? 'light' : 'dark') + ' theme');
+    }
+  }
+
+  var currentTheme = document.documentElement.getAttribute('data-theme') || getPreferredTheme();
+  applyTheme(currentTheme, false);
+
+  function toggleTheme() {
+    var now = document.documentElement.getAttribute('data-theme') || 'dark';
+    var next = now === 'light' ? 'dark' : 'light';
+    applyTheme(next, true);
+  }
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', toggleTheme);
+  }
+  if (themeToggleMobileBtn) {
+    themeToggleMobileBtn.addEventListener('click', toggleTheme);
+  }
+
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+      if (!getStoredTheme()) {
+        applyTheme(e.matches ? 'dark' : 'light', false);
+      }
+    });
+  }
+
   /* 3. NAVBAR, MOBILE DRAWER & SCROLL-SPY =================================== */
 
   var nav = $('#nav');

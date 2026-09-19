@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script>
+(function () {
+  var saved = localStorage.getItem('theme');
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var theme = saved || (prefersDark ? 'dark' : 'dark');
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
 <title>Kaiser Mohiuddin — AI/ML Engineer, Generative AI Developer &amp; Founder of SiratSync</title>
 
 <meta name="description" content="Final-year B.Tech CSE student at BGSBU and founder of SiratSync. I build production AI systems: RAG pipelines, computer-vision forensics and cross-platform mobile apps. Available for SDE and AI internships.">
@@ -81,6 +89,13 @@
         <li><a href="#education">Education</a></li>
         <li><a href="#contact">Contact</a></li>
         <li class="mobile-menu-actions">
+          <div class="mobile-theme-row">
+            <span>Appearance</span>
+            <button class="theme-toggle-mobile" id="themeToggleMobile" aria-label="Toggle theme">
+              <i class="fa-solid fa-sun" id="themeIconMobile"></i>
+              <span class="theme-label-text" id="themeTextMobile">Light Mode</span>
+            </button>
+          </div>
           <a class="btn btn-primary btn-mobile-resume" href="assets/docs/Kaiser_resume.pdf" download>
             <i class="fa-solid fa-file-arrow-down"></i> Download Resume
           </a>
@@ -94,6 +109,9 @@
     </nav>
 
     <div class="nav-cta">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+        <i class="fa-solid fa-sun" id="themeIcon"></i>
+      </button>
       <a class="btn btn-primary" href="assets/docs/Kaiser_resume.pdf" download>
         <i class="fa-solid fa-arrow-down"></i> Resume
       </a>
@@ -372,34 +390,24 @@
 
       <div class="projects" id="projectGrid">
 
-        <!-- Featured: VeriShield AI -->
-        <article class="project project-featured reveal" data-tags="genai cv">
+        <!-- VeriShield AI -->
+        <article class="project reveal" data-tags="genai cv">
           <div class="project-top">
             <div>
               <span class="project-badge">
-                <i class="fa-solid fa-trophy"></i>
-                Team Leader @ HackHive · Smart India Hackathon 2026 · PS 26188 (MHA / SSB)
+                <i class="fa-solid fa-trophy"></i> Smart India Hackathon 2026
               </span>
-              <h3 class="project-title">VeriShield AI — AI-Based Fake Identity &amp; Document Screening System</h3>
+              <h3 class="project-title">VeriShield AI</h3>
+              <p class="project-role-info">
+                <i class="fa-solid fa-users-viewfinder"></i> Team Leader @ HackHive · PS 26188 (MHA / SSB)
+              </p>
             </div>
             <div class="project-glyph" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></div>
           </div>
 
           <p class="project-desc">
-            A multi-module forensic pipeline for screening identity documents at scale. Submitted
-            against the Ministry of Home Affairs / SSB problem statement, the system reads a
-            document, checks whether its structure is plausible, looks for signs of digital
-            tampering, verifies the holder against a live camera feed, and returns a risk score an
-            operator can actually interrogate rather than simply accept.
+            An AI-based fake identity and document screening system submitted for the Ministry of Home Affairs / SSB problem statement. Features automated OCR text extraction, layout forensics, digital tampering detection (ELA &amp; CNN classifiers), live facial verification against camera feeds, and explainable risk scores.
           </p>
-
-          <div class="project-modules">
-            <div class="module"><b>Text extraction</b><span>PaddleOCR with a Tesseract fallback for degraded scans</span></div>
-            <div class="module"><b>Structural validation</b><span>Field-level and checksum rules against expected document layouts</span></div>
-            <div class="module"><b>Tampering detection</b><span>Error-level analysis, texture statistics and CNN forgery classifiers</span></div>
-            <div class="module"><b>Facial verification</b><span>Document photo matched to live camera embeddings</span></div>
-            <div class="module"><b>Explainable scoring</b><span>Dashboard showing which signals drove the risk verdict</span></div>
-          </div>
 
           <div class="project-stack">
             <span class="tag tag-accent">Python</span><span class="tag">OpenCV</span><span class="tag">FastAPI</span>
@@ -408,10 +416,10 @@
 
           <div class="project-links">
             <a class="plink plink-solid" href="https://github.com/Lonekaiser04/VeriShield-AI" target="_blank" rel="noopener">
-              <i class="fa-brands fa-github"></i> View repository
+              <i class="fa-brands fa-github"></i> View code
             </a>
             <a class="plink" href="https://github.com/Lonekaiser04" target="_blank" rel="noopener">
-              <i class="fa-solid fa-code-branch"></i> All repositories
+              <i class="fa-solid fa-code-branch"></i> All repos
             </a>
           </div>
         </article>

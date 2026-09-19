@@ -3,11 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script>
+(function () {
+  var saved = localStorage.getItem('theme');
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var theme = saved || (prefersDark ? 'dark' : 'dark');
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
 <title>Terms of Service — Kaiser Mohiuddin</title>
 <meta name="description" content="Terms of service for this portfolio site — how you may use this site and its content.">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0A0E17">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="dark light">
 
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
@@ -28,9 +36,14 @@
 <header class="nav is-stuck">
   <div class="nav-inner">
     <a class="brand" href="index.html">Kaiser Mohiuddin<span>.</span></a>
-    <a class="btn btn-outline" href="index.html">
-      <i class="fa-solid fa-arrow-left"></i> Back to portfolio
-    </a>
+    <div class="nav-cta">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+        <i class="fa-solid fa-sun" id="themeIcon"></i>
+      </button>
+      <a class="btn btn-outline" href="index.html">
+        <i class="fa-solid fa-arrow-left"></i> Back to portfolio
+      </a>
+    </div>
   </div>
 </header>
 
@@ -94,5 +107,6 @@
     </article>
   </div>
 </main>
+<script src="js/main.js" defer></script>
 </body>
 </html>
