@@ -42,26 +42,26 @@ My work focuses on applied machine learning, production generative AI, and resil
 
 ## 🛠️ Featured Projects
 
-### 🏆 [VeriShield AI — Fake Identity & Document Screening System](https://github.com/Lonekaiser04/VeriShield-AI) *(Flagship)*
-**Team Leader @ HackHive · Smart India Hackathon 2026 · PS 26188 (Ministry of Home Affairs / SSB)**  
-A multi-module forensic pipeline for screening identity documents at scale. Performs text extraction (PaddleOCR / Tesseract fallback), structural validation, tampering detection (error-level analysis, texture statistics, and CNN forgery classifiers), facial matching against live camera feeds, and explainable risk scoring.  
-`Python` · `OpenCV` · `FastAPI` · `PaddleOCR` · `Deep Learning` · `Docker`
+### 📱 [SiratSync — Mobile Application](https://play.google.com/store/apps/details?id=com.islamic.streakly)
+A cross-platform Islamic utility application with habit tracking, prayer times, Qibla, tasbih, duas and the 99 Names. Built offline-first with automatic Firestore sync on reconnect. Published and maintained on the Google Play Store with **480+ organic installs**.  
+`Flutter` · `Dart` · `Firebase Auth` · `Firestore Sync` · `FCM` · `Offline-First`  
+[Play Store](https://play.google.com/store/apps/details?id=com.islamic.streakly) · [Website](https://siratsync.in/)
 
 ### 💬 [Sirat Assistant — Conversational Islamic AI](https://github.com/Lonekaiser04/SiratSync-ai-agent)
-Retrieval-grounded assistant with intent routing and a 5,000+ chunk Qur'an/Hadith vector store. Multi-layer semantic caching reduced latency from ~3.2s to 1.9s; exposed via FastAPI and WhatsApp Cloud API.  
-`Python` · `LangChain` · `LLaMA` · `RAG` · `FastAPI` · `Semantic Caching` · `WhatsApp Cloud API`
+Retrieval-grounded assistant with intent routing and a 5,000+ chunk Qur'an/Hadith vector store. Multi-layer semantic caching reduced latency by ~40% (from ~3.2s to 1.9s); exposed via FastAPI and the WhatsApp Cloud API.  
+`Python` · `LangChain` · `LLaMA` · `RAG` · `FastAPI` · `Semantic Caching` · `WhatsApp Cloud API`  
+[View Code](https://github.com/Lonekaiser04/SiratSync-ai-agent) · [Live Platform](https://siratsync.in/)
+
+### 🛡️ [VeriShield AI — Document & Identity Screening](https://github.com/Lonekaiser04/VeriShield-AI)
+**Team Leader @ HackHive · Smart India Hackathon 2026 · PS 26188 (Ministry of Home Affairs / SSB)**  
+An AI-based fake identity and document screening system for the Ministry of Home Affairs / SSB problem statement. Currently in active development with an **MVP ready** — implementing document OCR text extraction, layout forensics, and digital tampering detection, with further verification modules in progress.  
+`Python` · `OpenCV` · `FastAPI` · `PaddleOCR` · `Deep Learning` · `Docker`  
+[View Code](https://github.com/Lonekaiser04/VeriShield-AI) · [All Repositories](https://github.com/Lonekaiser04)
 
 ### 🤖 [AutoStream AI Agent — Stateful Lead Generation](https://github.com/Lonekaiser04/AutoStream-Agent)
 Stateful lead-generation agent for a SaaS video platform built on LangGraph. Manages multi-turn conversation state, queries factual product information via RAG, and triggers CRM actions only when criteria are met.  
-`Python` · `LangGraph` · `RAG` · `FastAPI` · `Docker Compose`
-
-### 🚗 [License Plate Recognition & Blacklist Verification](https://github.com/Lonekaiser04/Number-Plate-Detection-and-Blacklist-Checking-System)
-Real-time ANPR system combining a custom-trained YOLOv8 detector with Tesseract OCR and fuzzy watchlist matching to handle glare, dirt, and motion blur in the field.  
-`Python` · `YOLOv8` · `OpenCV` · `Tesseract OCR` · `Fuzzy Matching`
-
-### 📋 [Task Manager Pro — Production Task Platform](https://github.com/Lonekaiser04/Task-manager)
-Full-stack containerised task management system featuring JWT auth with password hashing, role-based access control (RBAC), search & filtering, analytics, rate limiting, and Swagger API documentation.  
-`React 18` · `Node.js` · `Express` · `MongoDB` · `Docker Compose` · `JWT` · `Swagger`
+`Python` · `LangGraph` · `RAG` · `FastAPI` · `Docker Compose`  
+[View Code](https://github.com/Lonekaiser04/AutoStream-Agent) · [Demo Video](https://drive.google.com/file/d/1wAIg-ZKdzGUPENxcwnfWFjv6HDhE9gUh/view)
 
 ---
 
