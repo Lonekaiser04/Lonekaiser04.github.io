@@ -1,68 +1,79 @@
-# Kaiser Mohiuddin - Personal Portfolio
+# Kaiser Mohiuddin — Portfolio
 
-<div align="center">
+Personal portfolio at **[kaisermohiuddin.me](https://kaisermohiuddin.me)**.
+Static site, no build step, no framework — plain HTML, CSS and vanilla JavaScript.
 
-![Portfolio Banner](https://img.shields.io/badge/Portfolio-Kaiser%20Mohiuddin-blue?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Live-success?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+## Structure
 
-**Where AI, ethics, and faith come together to serve humanity.**
+```
+kaisermohiuddin-portfolio/
+├── assets/
+│   ├── images/          all photos, icons and favicons
+│   └── docs/
+│       └── Kaiser_resume.pdf
+├── css/
+│   └── styles.css       single stylesheet, token-driven
+├── js/
+│   └── main.js          interactions: scroll-spy, filtering, copy, form
+├── index.html
+├── privacy.html
+├── terms.html
+├── favicon.ico          kept at root for the browser's default request
+├── site.webmanifest
+├── robots.txt
+├── sitemap.xml
+├── CNAME
+└── .nojekyll
+```
 
-[🌐 Live Demo](https://kaisermohiuddin.me) • [📧 Contact](mailto:Lonekaiser04@gmail.com) • [📱 SiratSync](https://siratsync.in)
+Every `src`, `href` and `url()` is relative, so the site works when opened
+straight from disk as well as when served from a domain root.
 
-</div>
+## Running it locally
 
----
+```bash
+python3 -m http.server 8000
+# then open http://localhost:8000
+```
 
-## 🎯 Overview
+Opening `index.html` by double-clicking also works; a server is only needed if
+you want the clipboard API to use its native path rather than the fallback
+(browsers restrict `navigator.clipboard` to secure contexts).
 
-This is the official portfolio website of **Kaiser Mohiuddin** — a Computer Science Engineer and AI/ML enthusiast from Kupwara, Jammu & Kashmir. The website showcases my journey as the founder of **SiratSync** (an Islamic habit tracking app), along with my technical projects, skills, and vision for ethical technology.
+## Editing common things
 
-### 🌟 Mission
-To bridge the gap between cutting-edge technology and Islamic values, creating solutions that benefit humanity while maintaining spiritual integrity.
+| What | Where |
+|---|---|
+| Colours, type scale, spacing | `css/styles.css` → section 1, `:root` |
+| Availability pill text | `index.html` → `.status-pill` |
+| Hero metrics | `index.html` → `.metrics`, values in `data-count` |
+| Experience entries | `index.html` → `#experience`, each `<article class="role">` |
+| Projects | `index.html` → `#projectGrid`, each `<article class="project">` |
+| Contact details | `index.html` → `#contact` |
 
----
+### Adding a project
 
-## ✨ Features
+Copy an existing `<article class="project">` block and set `data-tags` to any
+combination of `genai`, `cv`, `fullstack`, `mobile`. The filter buttons pick it
+up automatically — no JavaScript changes needed.
 
-### 🎨 Design & UX
-- **Responsive Design** - Fully responsive across all devices (mobile, tablet, desktop)
-- **Dark/Light Theme** - System preference detection with manual toggle
-- **Smooth Animations** - Scroll-triggered animations using Intersection Observer
-- **Particle Background** - Dynamic floating particles for visual appeal
-- **Loading Screen** - Professional preloader with spinner animation
-- **Progress Bar** - Visual scroll progress indicator
+## Interaction notes
 
-### 📄 Sections
-- **Hero Section** - Animated introduction with stats counter and CTA buttons
-- **About Me** - Personal background with Islamic tech vision
-- **Education Timeline** - Academic journey with subject tags
-- **Skills Grid** - Categorized technical and soft skills with progress bars
-- **SiratSync Showcase** - Dedicated section for flagship Islamic app
-- **Projects Portfolio** - Filterable project cards with live demos
-- **Achievements** - Certifications and recognition cards
-- **Contact Form** - Google Apps Script integration for email delivery
-- **Advanced Footer** - Multi-column layout with social links
+- **Scroll-spy** uses `IntersectionObserver` and picks the section nearest the
+  viewport centre, which is steadier than "last one to fire" on fast scrolls.
+- **Reveal animations**, **counters** and **filter fades** all check
+  `prefers-reduced-motion` and fall back to instant rendering.
+- **There is no contact form.** The contact section points at a `mailto:` link,
+  the resume and the social profiles, with copy-to-clipboard buttons on both
+  email addresses. Nothing is submitted anywhere and no third-party endpoint is
+  involved.
 
-### ⚡ Performance
-- **Lazy Loading** - Fonts and icons loaded asynchronously
-- **Critical CSS** - Inline critical styles for faster rendering
-- **Service Worker** - Optional PWA support (sw.js)
-- **Optimized Images** - Proper image sizing and formatting
-- **Preconnect Hints** - DNS prefetching for external resources
+## Deploying
 
-### 🔍 SEO & Metadata
-- **Schema.org Markup** - JSON-LD structured data for better search visibility
-- **Open Graph Tags** - Rich social media previews (Facebook, Twitter)
-- **Meta Descriptions** - Optimized descriptions and keywords
-- **Semantic HTML** - Proper heading hierarchy and ARIA labels
-- **Sitemap Ready** - Clean URL structure for crawlers
+Push to the `main` branch of the GitHub Pages repository. `CNAME` keeps the
+custom domain bound and `.nojekyll` stops Jekyll from touching the output.
 
----
+## Licence
 
-## 🛠 Tech Stack
-{
-  "HTML5": "Semantic markup with accessibility",
-  "CSS3": "Custom properties, Grid, Flexbox, Animations",
-  "JavaScript": "ES6+ vanilla JS, no frameworks"
-}
+Code is MIT. The written content, photographs and the SiratSync brand are not —
+please ask before reusing them.
