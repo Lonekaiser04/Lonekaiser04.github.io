@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kaisermohiuddin.me/sitemap.xml
+Sitemap: https://lonekaiser04.github.io/sitemap.xml
